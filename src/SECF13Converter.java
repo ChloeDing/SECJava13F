@@ -1,7 +1,15 @@
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.LinkedHashMap;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,27 +27,80 @@ import org.w3c.dom.NodeList;
  *
  */
 
-public class SECF13Converter {
+public class SECF13Converter extends JFrame {
+
+	private JLabel f13linkAJLable;
+	private JTextField f13linkAJLableJTextField;
+	private JButton convertXMLtoEXCELJButton;
+	private JLabel resultMessageJLable;
 
 	public static void main(String[] args) {
+		
+		SECF13Converter application = new SECF13Converter();
+		application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+	}
 
+	private SECF13Converter() {
+		
+		createUserInterface();
+		
+	}
+
+	private void createUserInterface() {
+
+		setTitle("XML to EXCEL"); // set interface title
+		setSize(600, 600); // set window size
+		setVisible(true); // display window
+
+		Container contentPane = getContentPane();
+		contentPane.setLayout(null);
+
+		f13linkAJLable = new JLabel();
+		f13linkAJLable.setBounds(40, 40, 90, 20);
+		f13linkAJLable.setText("URL for XML 1:");
+		contentPane.add(f13linkAJLable);
+
+		f13linkAJLableJTextField = new JTextField();
+		f13linkAJLableJTextField.setBounds(150, 40, 300, 20);
+		contentPane.add(f13linkAJLableJTextField);
+
+		convertXMLtoEXCELJButton = new JButton();
+		convertXMLtoEXCELJButton.setBounds(150, 150, 200, 40);
+		convertXMLtoEXCELJButton.setText("Convert XML to EXCEL");
+		contentPane.add(convertXMLtoEXCELJButton);
+		convertXMLtoEXCELJButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				convertXMLtoEXCELJButtonActionPerformed(event);
+			}
+
+		});
+		
+		resultMessageJLable = new JLabel();
+		resultMessageJLable.setBounds(40, 250, 500, 20);
+		resultMessageJLable.setText("");
+		contentPane.add(resultMessageJLable);
+
+	}
+
+	private void convertXMLtoEXCELJButtonActionPerformed(ActionEvent event) {
+
+		String xmlUrlString = f13linkAJLableJTextField.getText();
 		// download the xml file from given url
-		String xmlUrlString = "https://www.sec.gov/Archives/edgar/data/813917/000081391717000004/halp13F.xml";
 		Document inputDoc = XMLUtil.getDocumentFromURL(xmlUrlString);
 		// System.out.println("doc size: " + inputDoc.getNodeName());
 
 		try {
 			f13convert(inputDoc);
-			System.out.println(
-					"SEC F13 XML successfualy converted to excel (.xls) file with three columes (consolidated company names, values and shares).");
+			resultMessageJLable.setText("SEC F13 XML successfualy converted to excel (.xls) file with three columes (consolidated company names, values and shares).");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("SEC F13 XML failed to converted to excel (.xls) file.");
+			resultMessageJLable.setText("SEC F13 XML failed to converted to excel file.");
 			return;
 		}
 	}
 
-	private static void f13convert(Document inputDoc) throws Exception {
+	private void f13convert(Document inputDoc) throws Exception {
 		// in
 		Element root = inputDoc.getDocumentElement();
 
