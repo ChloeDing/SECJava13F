@@ -83,9 +83,10 @@ public class SECF13Converter extends JFrame {
 		});
 
 		resultMessageJTextArea = new JTextArea();
-		resultMessageJTextArea.setBounds(80, 250, 350, 150);
+		resultMessageJTextArea.setBounds(80, 250, 500, 150);
 		resultMessageJTextArea.setText("");
 		resultMessageJTextArea.setEditable(false);
+		resultMessageJTextArea.setLineWrap(true);
 		contentPane.add(resultMessageJTextArea);
 
 		setTitle("XML to EXCEL"); // set interface title
